@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Словарь программиста | Лоскутов Константин</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #1a2a6c, #b21f1f, #1a2a6c);
+            color: #333;
+            padding: 20px;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        header {
+            text-align: center;
+            padding: 30px 0;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 15px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+        
+        h1 {
+            font-size: 3rem;
+            margin-bottom: 15px;
+            color: #1a2a6c;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        
+        .subtitle {
+            font-size: 1.2rem;
+            color: #b21f1f;
+            margin-bottom: 10px;
+        }
+        
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+        
+        .filter-btn {
+            padding: 12px 25px;
+            font-size: 1rem;
+            background: #1a2a6c;
+            color: white;
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        
+        .filter-btn:hover {
+            background: #b21f1f;
+            transform: translateY(-3px);
+        }
+        
+        .filter-btn.active {
+            background: #b21f1f;
+            box-shadow: 0 0 15px rgba(178, 31, 31, 0.6);
+        }
+        
+        .alphabet-nav {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin: 20px 0;
+        }
+        
+        .letter-btn {
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(255, 255, 255, 0.8);
+            border: none;
+            border-radius: 50%;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .letter-btn:hover {
+            background: #b21f1f;
+            color: white;
+            transform: scale(1.1);
+        }
+        
+        .letter-btn.active {
+            background: #1a2a6c;
+            color: white;
+            transform: scale(1.1);
+        }
+        
+        .search-container {
+            text-align: center;
+            margin: 25px 0;
+        }
+        
+        #search {
+            width: 70%;
+            padding: 15px;
+            border: none;
+            border-radius: 30px;
+            font-size: 1.1rem;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            outline: none;
+        }
+        
+        .dictionary {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+        
+        .term-card {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+            transition: transform 0.3s ease;
+        }
+        
+        .term-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 12px 25px rgba(0, 0, 0, 0.3);
+        }
+        
+        .term-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #e0e0e0;
+        }
+        
+        .term-word {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #1a2a6c;
+        }
+        
+        .term-type {
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 0.9rem;
+        }
+        
+        .jargon {
+            background: #ff6b6b;
+            color: white;
+        }
+        
+        .professional {
+            background: #4ecdc4;
+            color: white;
+        }
+        
+        .term-definition {
+            font-size: 1.1rem;
+            line-height: 1.6;
+            color: #444;
+        }
+        
+        footer {
+            text-align: center;
+            padding: 25px;
+            background: rgba(0, 0, 0, 0.7);
+            color: white;
+            border-radius: 15px;
+            font-size: 1.2rem;
+            margin-top: 20px;
+        }
+        
+        .no-results {
+            grid-column: 1 / -1;
+            text-align: center;
+            padding: 40px;
+            font-size: 1.5rem;
+            color: #b21f1f;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 15px;
+        }
+        
+        @media (max-width: 768px) {
+            .dictionary {
+                grid-template-columns: 1fr;
+            }
+            
+            .controls {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            #search {
+                width: 90%;
+            }
+            
+            .letter-btn {
+                width: 35px;
+                height: 35px;
+                font-size: 0.9rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Словарь программиста</h1>
+            <p class="subtitle">40 жаргонных и 40 профессиональных терминов с пояснениями</p>
+            <div class="controls">
+                <button class="filter-btn active" data-filter="all">Все термины</button>
+                <button class="filter-btn" data-filter="jargon">Жаргон</button>
+                <button class="filter-btn" data-filter="professional">Профессиональные</button>
+            </div>
+            <div class="alphabet-nav" id="alphabetNav">
+                <!-- Буквы алфавита будут добавлены через JavaScript -->
+            </div>
+            <div class="search-container">
+                <input type="text" id="search" placeholder="Поиск по словарю...">
+            </div>
+        </header>
+        
+        <div class="dictionary" id="dictionary">
+            <!-- Термины будут вставлены с помощью JavaScript -->
+        </div>
+        
+        <footer>
+            Лоскутов Константин | КС-21
+        </footer>
+    </div>
+
+    <script>
+        // Массив с терминами
+        const terms = [
+            // Жаргонные термины (40)
+            { word: "Абстракция", definition: "Игнорирование несущественных деталей при проектировании.", type: "professional" },
+            { word: "Адаптер", definition: "Структурный паттерн для совмещения несовместимых интерфейсов.", type: "professional" },
+            { word: "Алгоритм", definition: "Конечная последовательность шагов для решения задачи.", type: "professional" },
+            { word: "Асинхронность", definition: "Выполнение операций без блокировки основного потока.", type: "professional" },
+            { word: "Баг", definition: "Ошибка в программе или системе.", type: "jargon" },
+            { word: "Бан", definition: "Блокировка пользователя или IP-адреса.", type: "jargon" },
+            { word: "Батч", definition: "Пакетное выполнение задач без вмешательства пользователя.", type: "jargon" },
+            { word: "Бенчмарк", definition: "Тестирование производительности системы или компонента.", type: "professional" },
+            { word: "Библиотека", definition: "Набор готовых функций и классов для повторного использования.", type: "professional" },
+            { word: "Билд", definition: "Собранная версия программного продукта.", type: "jargon" },
+            { word: "Буфер", definition: "Область памяти для временного хранения данных.", type: "professional" },
+            { word: "Валидация", definition: "Проверка корректности входных данных.", type: "professional" },
+            { word: "Велосипед", definition: "Создание решения, которое уже существует.", type: "jargon" },
+            { word: "Гамма", definition: "Предрелизная версия ПО для тестирования.", type: "jargon" },
+            { word: "Гит", definition: "Система контроля версий Git.", type: "jargon" },
+            { word: "Грабли", definition: "Повторяющиеся ошибки.", type: "jargon" },
+            { word: "Движок", definition: "Основной компонент программной системы.", type: "jargon" },
+            { word: "Дебаггер", definition: "Инструмент для поиска и исправления ошибок.", type: "professional" },
+            { word: "Декомпозиция", definition: "Разделение задачи на подзадачи.", type: "professional" },
+            { word: "Декоратор", definition: "Паттерн для динамического добавления функциональности.", type: "professional" },
+            { word: "Деплой", definition: "Развертывание приложения на сервере.", type: "jargon" },
+            { word: "Инжекция", definition: "Внедрение зависимостей в объекты.", type: "professional" },
+            { word: "Инкапсуляция", definition: "Сокрытие реализации объектов.", type: "professional" },
+            { word: "Интерфейс", definition: "Контракт взаимодействия между компонентами.", type: "professional" },
+            { word: "Итерация", definition: "Цикл разработки в Agile-методологиях.", type: "professional" },
+            { word: "Кластер", definition: "Группа серверов, работающих как единая система.", type: "professional" },
+            { word: "Клиент-сервер", definition: "Архитектура взаимодействия в распределенных системах.", type: "professional" },
+            { word: "Код-ревью", definition: "Проверка кода другими разработчиками.", type: "jargon" },
+            { word: "Коммит", definition: "Фиксация изменений в системе контроля версий.", type: "jargon" },
+            { word: "Компилятор", definition: "Программа, переводящая исходный код в машинный.", type: "professional" },
+            { word: "Контейнеризация", definition: "Изолированное выполнение приложений.", type: "professional" },
+            { word: "Костыль", definition: "Временное или неэлегантное решение проблемы.", type: "jargon" },
+            { word: "Легаси", definition: "Устаревший, но используемый код или система.", type: "jargon" },
+            { word: "Линтер", definition: "Инструмент статического анализа кода.", type: "jargon" },
+            { word: "Мемоизация", definition: "Кэширование результатов вызовов функций.", type: "professional" },
+            { word: "Методология", definition: "Система принципов разработки ПО.", type: "professional" },
+            { word: "Мокап", definition: "Статический прототип интерфейса.", type: "jargon" },
+            { word: "Наследование", definition: "Механизм повторного использования кода в ООП.", type: "professional" },
+            { word: "Оверквотинг", definition: "Чрезмерное цитирование в ответах.", type: "jargon" },
+            { word: "ООП", definition: "Объектно-ориентированное программирование.", type: "professional" },
+            { word: "Пагинация", definition: "Разбиение данных на страницы.", type: "professional" },
+            { word: "Паттерн", definition: "Типовое решение распространенной проблемы.", type: "professional" },
+            { word: "Пирамида", definition: "Негативный тест для проверки стабильности.", type: "jargon" },
+            { word: "Плагин", definition: "Модуль, расширяющий функциональность ПО.", type: "jargon" },
+            { word: "Полиморфизм", definition: "Возможность объектов с одинаковым интерфейсом иметь разную реализацию.", type: "professional" },
+            { word: "Пул", definition: "Набор готовых к использованию ресурсов.", type: "jargon" },
+            { word: "Реверс", definition: "Обратная разработка (reverse engineering).", type: "jargon" },
+            { word: "Рекурсия", definition: "Функция, вызывающая саму себя.", type: "professional" },
+            { word: "Релиз", definition: "Финальная версия продукта для пользователей.", type: "jargon" },
+            { word: "Рефакторинг", definition: "Улучшение кода без изменения функциональности.", type: "jargon" },
+            { word: "Саппорт", definition: "Поддержка пользователей.", type: "jargon" },
+            { word: "Синтаксис", definition: "Правила написания инструкций языка.", type: "professional" },
+            { word: "Скрипт", definition: "Программа для автоматизации задач.", type: "jargon" },
+            { word: "Стек", definition: "Набор технологий для разработки.", type: "jargon" },
+            { word: "Сценарий", definition: "Последовательность действий пользователя.", type: "professional" },
+            { word: "Тред", definition: "Поток выполнения в программе.", type: "jargon" },
+            { word: "Фасад", definition: "Паттерн, предоставляющий простой интерфейс к сложной системе.", type: "professional" },
+            { word: "Фича", definition: "Функциональность программы.", type: "jargon" },
+            { word: "Фреймворк", definition: "Каркас для разработки приложений.", type: "jargon" },
+            { word: "Фронтенд", definition: "Клиентская часть приложения.", type: "jargon" },
+            { word: "Хедер", definition: "Заголовок документа или сообщения.", type: "jargon" },
+            { word: "Хост", definition: "Компьютер или устройство в сети.", type: "jargon" },
+            { word: "Цикломатика", definition: "Метрика сложности программы.", type: "professional" },
+            { word: "Чистый код", definition: "Код, который легко читать и поддерживать.", type: "jargon" },
+            { word: "Шадуинг", definition: "Скрытое внедрение изменений.", type: "jargon" },
+            { word: "Шардинг", definition: "Горизонтальное разделение данных в БД.", type: "professional" },
+            { word: "Эксплойт", definition: "Код, использующий уязвимость системы.", type: "jargon" },
+            { word: "Энтропия", definition: "Мера хаоса в системе.", type: "professional" },
+            { word: "Юнит-тест", definition: "Тестирование отдельного модуля программы.", type: "jargon" },
+            { word: "Ядро", definition: "Центральная часть операционной системы.", type: "professional" }
+        ];
+
+        // Сортировка терминов по русскому алфавиту
+        terms.sort((a, b) => a.word.localeCompare(b.word, 'ru'));
+
+        // Функция для отображения терминов
+        function renderTerms(filter = 'all', searchTerm = '', letter = '') {
+            const dictionary = document.getElementById('dictionary');
+            dictionary.innerHTML = '';
+            
+            const filteredTerms = terms.filter(term => {
+                const matchesFilter = filter === 'all' || term.type === filter;
+                const matchesSearch = term.word.toLowerCase().includes(searchTerm.toLowerCase()) || 
+                                     term.definition.toLowerCase().includes(searchTerm.toLowerCase());
+                const matchesLetter = !letter || term.word[0].toLowerCase() === letter.toLowerCase();
+                return matchesFilter && matchesSearch && matchesLetter;
+            });
+            
+            if (filteredTerms.length === 0) {
+                dictionary.innerHTML = '<div class="no-results">Ничего не найдено. Попробуйте другой запрос.</div>';
+                return;
+            }
+            
+            filteredTerms.forEach(term => {
+                const card = document.createElement('div');
+                card.className = 'term-card';
+                
+                const typeClass = term.type === 'jargon' ? 'jargon' : 'professional';
+                
+                card.innerHTML = `
+                    <div class="term-header">
+                        <div class="term-word">${term.word}</div>
+                        <div class="term-type ${typeClass}">${term.type === 'jargon' ? 'Жаргон' : 'Проф.'}</div>
+                    </div>
+                    <div class="term-definition">${term.definition}</div>
+                `;
+                
+                dictionary.appendChild(card);
+            });
+        }
+        
+        // Создание кнопок алфавита
+        function createAlphabetButtons() {
+            const alphabetNav = document.getElementById('alphabetNav');
+            const alphabet = 'АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ';
+            
+            // Создаем кнопку "Все"
+            const allButton = document.createElement('button');
+            allButton.className = 'letter-btn active';
+            allButton.textContent = 'Все';
+            allButton.dataset.letter = '';
+            allButton.addEventListener('click', (e) => {
+                document.querySelectorAll('.letter-btn').forEach(btn => btn.classList.remove('active'));
+                e.target.classList.add('active');
+                const activeFilter = document.querySelector('.filter-btn.active').dataset.filter;
+                renderTerms(activeFilter, document.getElementById('search').value, '');
+            });
+            alphabetNav.appendChild(allButton);
+            
+            // Создаем кнопки для каждой буквы
+            for (let i = 0; i < alphabet.length; i++) {
+                const letter = alphabet[i];
+                const button = document.createElement('button');
+                button.className = 'letter-btn';
+                button.textContent = letter;
+                button.dataset.letter = letter;
+                
+                button.addEventListener('click', (e) => {
+                    document.querySelectorAll('.letter-btn').forEach(btn => btn.classList.remove('active'));
+                    e.target.classList.add('active');
+                    const activeFilter = document.querySelector('.filter-btn.active').dataset.filter;
+                    renderTerms(activeFilter, document.getElementById('search').value, letter);
+                });
+                
+                alphabetNav.appendChild(button);
+            }
+        }
+        
+        // Инициализация словаря
+        document.addEventListener('DOMContentLoaded', () => {
+            createAlphabetButtons();
+            renderTerms();
+            
+            // Обработчики для кнопок фильтрации
+            document.querySelectorAll('.filter-btn').forEach(button => {
+                button.addEventListener('click', () => {
+                    document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
+                    button.classList.add('active');
+                    const activeLetter = document.querySelector('.letter-btn.active').dataset.letter;
+                    renderTerms(button.dataset.filter, document.getElementById('search').value, activeLetter);
+                });
+            });
+            
+            // Обработчик для поиска
+            document.getElementById('search').addEventListener('input', (e) => {
+                const activeFilter = document.querySelector('.filter-btn.active').dataset.filter;
+                const activeLetter = document.querySelector('.letter-btn.active').dataset.letter;
+                renderTerms(activeFilter, e.target.value, activeLetter);
+            });
+        });
+    </script>
+</body>
+</html>
